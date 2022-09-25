@@ -7,6 +7,7 @@ import os.path
 import random
 import math
 import collections
+import glob
 
 import h5py
 import numpy as np
@@ -15,6 +16,8 @@ from skimage.transform import resize
 import torch as th
 from torch.utils.data import Dataset
 from torchvision.datasets.utils import download_url
+from matplotlib import pyplot as plt
+from PIL import Image
 
 from tools import flowlib
 
@@ -285,6 +288,34 @@ class NYUDepthV2(Dataset):
     def __del__(self):
         if not self.cache_all:
             self._file.close()
+
+
+#DDR数据集
+class DDRDataset(Dataset):
+    def __init__(self, inputs_root, labels_root, transform):
+    # def __init__(self, inputs_root, labels_root):
+        # print(os.getcwd())
+        # print(f'{inputs_root}/*.jpg')
+        self.files = sorted(glob.glob(f'{inputs_root}/*.jpg'))
+        # self.files = sorted(glob.glob("../data/A. Segmentation/1. Original Images/a. Training Set/*.jpg"))
+        # print('len of Dataset: ' + str(len(self.files)))
+        self.files_using = sorted(glob.glob(f'{labels_root}/*.tif'))
+        # self.files_using = sorted(glob.glob("../data/A. Segmentation/2. All Segmentation Groundtruths/a. Training Set/4. Soft Exudates/*.tif"))
+        self.transform = transform
+
+
+
+
+    def __getitem__(self, index):
+        inputs = plt.imread(self.files[index % len(self.files)])
+        labels = plt.imread(self.files_using[index % len(self.files_using)])
+        if self.transform is not None:
+            inputs = self.transform(Image.fromarray(inputs))
+            labels = self.transform(Image.fromarray(labels))
+        return inputs, labels
+
+    def __len__(self):
+        return len(self.files)
 
 
 class AssembleJointUpsamplingInputs(object):
