@@ -293,18 +293,9 @@ class NYUDepthV2(Dataset):
 #DDR数据集
 class DDRDataset(Dataset):
     def __init__(self, inputs_root, labels_root, transform):
-    # def __init__(self, inputs_root, labels_root):
-        # print(os.getcwd())
-        # print(f'{inputs_root}/*.jpg')
         self.files = sorted(glob.glob(f'{inputs_root}/*.jpg'))
-        # self.files = sorted(glob.glob("../data/A. Segmentation/1. Original Images/a. Training Set/*.jpg"))
-        # print('len of Dataset: ' + str(len(self.files)))
         self.files_using = sorted(glob.glob(f'{labels_root}/*.tif'))
-        # self.files_using = sorted(glob.glob("../data/A. Segmentation/2. All Segmentation Groundtruths/a. Training Set/4. Soft Exudates/*.tif"))
         self.transform = transform
-
-
-
 
     def __getitem__(self, index):
         inputs = plt.imread(self.files[index % len(self.files)])

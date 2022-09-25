@@ -237,7 +237,8 @@ def main():
         train_transform = datasets.AssembleJointUpsamplingInputs(args.factor, flip=True, lowres_mode=lowres_mode,
                                                                  zero_guidance=args.zero_guidance,
                                                                  output_crop=eval_border, crop=(
-                None if args.train_crop <= 0 else args.train_crop))
+                                                                    None if args.train_crop <= 0 else args.train_crop
+                                                                ))
         test_transform = datasets.AssembleJointUpsamplingInputs(args.factor, flip=False, lowres_mode=lowres_mode,
                                                                 zero_guidance=args.zero_guidance,
                                                                 output_crop=eval_border)
@@ -248,6 +249,14 @@ def main():
             train_dset = None
         test_dset = datasets.NYUDepthV2(args.data_root, transform=test_transform, download=args.download,
                                         split=test_split, val_ratio=args.val_ratio, cache_all=True)
+
+    #使用DDR数据集
+    elif args.dataset == 'DDR':
+        print('Start loading DDR datasets.....')
+        #载入数据集
+
+        print('Loaded DDR datasets.')
+
     elif args.dataset in ('Sintel', 'Sintel-clean', 'Sintel-final', 'Sintel-albedo'):
         render_pass = 'clean' if args.dataset == 'Sintel' else args.dataset.split('-')[1]
         ch, guide_ch = 1, 3
