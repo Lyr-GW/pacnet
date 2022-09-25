@@ -10,6 +10,12 @@ import torch as th
 import torch.nn as nn
 import torch.nn.functional as F
 
+import sys
+from pathlib import Path
+current_folder = Path(__file__).absolute().parent
+father_folder = str(current_folder.parent)
+sys.path.append(father_folder)
+
 from pac import PacConvTranspose2d
 
 
