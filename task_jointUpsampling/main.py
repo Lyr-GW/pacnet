@@ -11,7 +11,7 @@ import torch
 import torch.nn.functional as F
 import torch.optim as optim
 
-from . import models, datasets
+import models, datasets
 
 
 def apply_model(net, lres, guide, factor):
