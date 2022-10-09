@@ -254,7 +254,16 @@ def main():
     elif args.dataset == 'DDR':
         print('Start loading DDR datasets.....')
         #载入数据集
-
+        #DDR loader
+        #train 训练集
+        # dataset=datasets.DDRDataset(
+        #     inputs_root=config.DDR_ROOT_DIR+config.DDR_TRAIN_IMG,
+        #     labels_root=config.DDR_ROOT_DIR+config.DDR_TRAIN_GT,
+        #     transform=train_augs,
+        # ),
+        # batch_size=config.BATCH_SIZE,
+        # shuffle=False,
+        # num_workers=config.NUM_WORKERS,
         print('Loaded DDR datasets.')
 
     elif args.dataset in ('Sintel', 'Sintel-clean', 'Sintel-final', 'Sintel-albedo'):
