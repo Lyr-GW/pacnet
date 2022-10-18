@@ -7,6 +7,7 @@ import os
 import glob
 
 import config
+from torchvision import transforms
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -72,10 +73,12 @@ def train(model, train_loader, optimizer, device, epoch, lr, loss_type, perf_mea
 
 def test(model, test_loader, device, epoch, lr, loss_type, perf_measures, args):
     model.eval()
+    print("-------"+list(test_loader)[0][0])
     loss_accum = 0
     perf_measures_accum = [0.0] * len(perf_measures)
     with torch.no_grad():
         for sample in test_loader:
+            print(type(sample))
             lres, guide, target = sample[0].to(device), sample[1].to(device), sample[2].to(device)
             if len(sample) >= 4:
                 raw_range = sample[3].to(device)
@@ -255,16 +258,26 @@ def main():
     elif args.dataset == 'DDR':
         print('Start loading DDR datasets.....')
         #载入数据集
+
         #DDR loader
         #train 训练集
+        ch, guide_ch = 1, 3
+        perf_measures = ('rmse',) if not args.measures else args.measures
+        train_augs = transforms.Compose([
+            transforms.Resize([2848, 4288]),
+            transforms.RandomCrop([512,512]),
+            transforms.ToTensor(),
+        ])
         train_dset = datasets.DDRDataset(
             inputs_root = config.DDR_ROOT_DIR+config.DDR_TRAIN_IMG,
             labels_root = config.DDR_ROOT_DIR+config.DDR_TRAIN_GT,
-            # transform = train_augs,
+            transform = train_augs,
         ),
-        # batch_size = config.BATCH_SIZE,
-        # shuffle = False,
-        # num_workers = config.NUM_WORKERS,
+        test_dset = datasets.DDRDataset(
+            inputs_root = config.DDR_ROOT_DIR+config.DDR_TEST_IMG,
+            labels_root = config.DDR_ROOT_DIR+config.DDR_TEST_GT,
+            transform = train_augs,
+        ),
         print('Loaded DDR datasets.')
 
     elif args.dataset in ('Sintel', 'Sintel-clean', 'Sintel-final', 'Sintel-albedo'):
@@ -297,6 +310,7 @@ def main():
         train_loader = None
     else:
         train_loader = torch.utils.data.DataLoader(train_dset, batch_size=args.batch_size, shuffle=True, **dl_kwargs)
+    # print("len of test_dset"+str(len(test_dset)))
     test_loader = torch.utils.data.DataLoader(test_dset, batch_size=args.test_batch_size, shuffle=True, **dl_kwargs)
 
     # model

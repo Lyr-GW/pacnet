@@ -2,3 +2,6 @@ __pycache__
 */__pycache__
 .vscode/settings.json
 data/nyu/nyu_depth_v2_labeled.mat
+.vscode/launch.json
+exp/ddr/test.log
+exp/ddr/train.log
