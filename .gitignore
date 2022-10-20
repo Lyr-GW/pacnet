@@ -5,3 +5,6 @@ data/nyu/nyu_depth_v2_labeled.mat
 .vscode/launch.json
 exp/ddr/test.log
 exp/ddr/train.log
+*/lesion_segmentation
+*.jpg
+*.tif

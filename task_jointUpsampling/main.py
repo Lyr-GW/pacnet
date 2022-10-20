@@ -270,12 +270,10 @@ def main():
         ])
         train_dset = datasets.DDRDataset(
             inputs_root = config.DDR_ROOT_DIR+config.DDR_TRAIN_IMG,
-            labels_root = config.DDR_ROOT_DIR+config.DDR_TRAIN_GT,
             transform = train_augs,
         ),
         test_dset = datasets.DDRDataset(
             inputs_root = config.DDR_ROOT_DIR+config.DDR_TEST_IMG,
-            labels_root = config.DDR_ROOT_DIR+config.DDR_TEST_GT,
             transform = train_augs,
         ),
         print('Loaded DDR datasets.')
@@ -309,9 +307,30 @@ def main():
     if test_only:
         train_loader = None
     else:
-        train_loader = torch.utils.data.DataLoader(train_dset, batch_size=args.batch_size, shuffle=True, **dl_kwargs)
-    # print("len of test_dset"+str(len(test_dset)))
-    test_loader = torch.utils.data.DataLoader(test_dset, batch_size=args.test_batch_size, shuffle=True, **dl_kwargs)
+        if args.dataset == 'DDR':
+            train_loader=torch.utils.data.DataLoader(
+                dataset=datasets.DDRDataset(
+                    inputs_root=config.DDR_ROOT_DIR+config.DDR_TRAIN_IMG,
+                    transform=train_augs,
+                    ),
+                batch_size=args.batch_size,
+                shuffle=True,
+            )
+        else:
+            train_loader = torch.utils.data.DataLoader(train_dset, batch_size=args.batch_size, shuffle=True, **dl_kwargs)
+
+
+    if args.dataset == 'DDR':
+        test_loader = torch.utils.data.Dataloader(
+            dataset=datasets.DDRDataset(
+                inputs_root=config.DDR_ROOT_DIR+config.DDR_TEST_IMG,
+                transform=train_augs,
+                ),
+            batch_size=args.batch_size,
+            shuffle=True,
+        )
+    else:
+        test_loader = torch.utils.data.DataLoader(test_dset, batch_size=args.test_batch_size, shuffle=True, **dl_kwargs)
 
     # model
     if args.model.startswith('JBU'):

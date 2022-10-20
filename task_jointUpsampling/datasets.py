@@ -292,19 +292,17 @@ class NYUDepthV2(Dataset):
 
 #DDR数据集
 class DDRDataset(Dataset):
-    def __init__(self, inputs_root, labels_root, transform):
+    def __init__(self, inputs_root, transform):
         self.files = sorted(glob.glob(f'{inputs_root}/*.jpg'))
-        # self.files_using = sorted(glob.glob(f'{labels_root}/*.tif'))
         self.transform = transform
 
     def __getitem__(self, index):
         inputs = plt.imread(self.files[index % len(self.files)])
         # labels = plt.imread(self.files_using[index % len(self.files_using)])
+        # print(type(inputs))
         if self.transform is not None:
             inputs = self.transform(Image.fromarray(inputs))
             # labels = self.transform(Image.fromarray(labels))
-
-        print(type(inputs))
         return inputs
 
     def __len__(self):
